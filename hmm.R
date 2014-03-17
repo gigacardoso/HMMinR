@@ -7,19 +7,21 @@
 # Initialise HMM
 hmm = initHMM(c("A","B"), 
 c("H","N","L","VL"),
-transProbs=matrix(c(.25,.25,.25,.25,
-.25,.25,.25,.25,
-.25,.25,.25,.25,
-.25,.25,.25,.25),4)
-emissionProbs=matrix(c(.25,.25,.25,.25,
-.25,.25,.25,.25,
-.25,.25,.25,.25,
-.25,.25,.25,.25),4))
+transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
+emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))
 
+print(hmm)
+print("yay")
 #train HMM
  for (i in 1:nrow(d)) {
-	print(d[i,])
-	obs = d[1,2:ncol(d)]
+	#print(d[i,2:ncol(d)])
+	obs = as.vector(d[1,2:ncol(d)])
+	obs <- vector()
+	m = 1
+	for (j in 2:ncol(d)) {
+		obs[[m]] <- d[i,j]
+		m = m + 1
+	}
 	baumWelch(hmm, obs, maxIterations=100, delta=1E-9, pseudoCount=0)
 }
 print(hmm)
