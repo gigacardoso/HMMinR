@@ -1,6 +1,7 @@
-local({pkg <- select.list(sort(.packages(all.available = TRUE)),graphics=TRUE) if(nchar(pkg)) library(pkg, character.only=TRUE)})
+ local({pkg <- select.list(sort(.packages(all.available = TRUE)),graphics=TRUE)
+ if(nchar(pkg)) library(pkg, character.only=TRUE)})
 
-hmm = initHMM(c("A","B"),c("L","R"))
+hmm = initHMM(c("A","B"),c("L","R"),transProbs=matrix(c(.25,.25,.25,.25),2),emissionProbs=matrix(c(.25,.25,.25,.25),2))
 print(hmm)
 # Sequence of observation
 a = sample(c(rep("L",100),rep("R",300)))
