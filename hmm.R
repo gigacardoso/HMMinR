@@ -15,14 +15,14 @@ print("yay")
 #train HMM
  for (i in 1:nrow(d)) {
 	#print(d[i,2:ncol(d)])
-	obs = as.vector(d[1,2:ncol(d)])
-	obs <- vector()
+	#observations = as.vector(d[1,2:ncol(d)])
+	observations <- vector()
 	m = 1
 	for (j in 2:ncol(d)) {
-		obs[[m]] <- d[i,j]
+		observations[[m]] <- d[i,j]
 		m = m + 1
 	}
-	baumWelch(hmm, obs, maxIterations=100, delta=1E-9, pseudoCount=0)
+	baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
 }
 print(hmm)
 
