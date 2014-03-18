@@ -5,8 +5,7 @@
  d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\ALB.csv",head=TRUE,sep=",")
 
 # Initialise HMM
-hmm = initHMM(c("A","B"), 
-c("H","N","L","VL"),
+hmm = initHMM(c("A","B","C","D"), c("H","N","L","VL"),
 transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
 emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))
 
