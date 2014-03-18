@@ -2,7 +2,7 @@
  if(nchar(pkg)) library(pkg, character.only=TRUE)})
 
 #load data
-d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
+d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 
 # Initialise HMM
 hmm = initHMM(c("A","B","C","D"), c("H","N","L","VL"),
