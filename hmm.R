@@ -13,17 +13,17 @@ print(hmm)
 print("yay")
 #train HMM
 #nrow(d)
- for (i in 1:100) {
-	print(i)
-	observations <- vector()
-	m = 1
+m = 1
+observations <- vector()
+ for (i in 1:nrow(d)) {
+	#print(i)
 	for (j in 2:ncol(d)) {
 		observations[m] <- d[[i,j]]
 		m = m + 1
 	}
-	hmm = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
-	print(hmm)
 }
+print(observations)
+hmm = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
 print(hmm)
 
 # Sequence of observations
