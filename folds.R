@@ -1,5 +1,5 @@
-i <- nrow(d)
-fold <- floor(i/10)
+rows <- nrow(d)
+fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
 for(j in 1:9){

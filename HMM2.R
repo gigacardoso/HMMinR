@@ -15,20 +15,21 @@ emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.
 #train HMM
 
 for (i in 1:nrow(d)) {
-	print(i)
+	print(paste("row ", i))
 	observations <- vector()
 	m = 1
 	for (j in 2:ncol(d)) {
+		#print(paste("column ", m))
 		observations[m] <- d[[i,j]]
-		m = m + 1
-	}
-	print(observation)
-	print("")
+  		m = m + 1
+  	}
+	print(paste("obs: ",observations))
 	if(i == 1){
 		vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
 	}else{
 		vt = baumWelch(vt$hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
 	}
+	print(vt$hmm)
 }
 #print(observations)
 print(vt$hmm)
