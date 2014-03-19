@@ -1,6 +1,4 @@
- local({pkg <- select.list(sort(.packages(all.available = TRUE)),graphics=TRUE)
- if(nchar(pkg)) library(pkg, character.only=TRUE)})
-
+library(HMM)
 #load data
 d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 
