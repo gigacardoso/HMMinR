@@ -18,8 +18,7 @@ for(j in 1:9){
 		}else {
 			train1 <- d[1:folds[j]-1,]
 			train2 <- d[folds[j+1]+1:nrow(d),]
-			size <- nrow(d) - folds[j+1]+1
-			print(size)
+			size <- nrow(d) - folds[j+1]
 			test <- d[folds[j]:folds[j+1],]
 			train <- rbind(train1, train2[1,])
 			for(k in 2:size){
@@ -28,7 +27,6 @@ for(j in 1:9){
 			print(paste("train ", 1,"-",folds[j]-1))
 			print(paste("test ", folds[j],"-" , folds[j+1]))
 			print(paste("train ", folds[j+1]+1,"-",nrow(d)))
-			print(train)
 		}
 	}
 }
