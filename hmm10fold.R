@@ -36,15 +36,21 @@ for(j in 1:9){
 		transProbs=matrix(c(.5,.2,.1,.2,.2,.5,.2,.1,.1,.15,.55,.2,.2,.15,.15,.5),4),
 		emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))	
 	
+	#train hmm
 	m = 1
-observations <- vector()
- for (i in 1:nrow(d)) {
-	for (j in 2:ncol(d)) {
-		observations[m] <- d[[i,j]]
-		m = m + 1
+	observations <- vector()
+	for (i in 1:nrow(train)) {
+		for (j in 2:ncol(train)) {
+			observations[m] <- train[[i,j]]
+			m = m + 1
+		}
 	}
-}
-vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
+	vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
 
-
+	#predict
+	
+	
+	
+	
+	
 }
