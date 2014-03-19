@@ -3,9 +3,19 @@ library(HMM)
 d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 
 # Initialise HMM
-hmm = initHMM(c("A","B","C","D"), c("H","N","L","VL"),
-transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
+hmm = initHMM(c("1","2","3","4"), c("H","N","L","VL"),
+transProbs=matrix(c(
+.5,.2,.1,.2,
+.2,.5,.2,.1,
+.1,.15,.55,.2,
+.2,.15,.15,.5),4),
 emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))
+#matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
+#matrix(c(
+#.5,.2,.1,.2,
+#.2,.5,.2,.1,
+#.1,.15,.55,.2,
+#.2,.15,.15,.5),4)
 
 print(hmm)
 print("yay")
