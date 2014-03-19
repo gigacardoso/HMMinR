@@ -10,29 +10,27 @@ transProbs=matrix(c(
 .1,.15,.55,.2,
 .2,.15,.15,.5),4),
 emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))
-#matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
-#matrix(c(
-#.5,.2,.1,.2,
-#.2,.5,.2,.1,
-#.1,.15,.55,.2,
-#.2,.15,.15,.5),4)
 
-print(hmm)
-print("yay")
+#print(hmm)
 #train HMM
-#nrow(d)
-m = 1
-observations <- vector()
- for (i in 1:nrow(d)) {
-	#print(i)
+
+for (i in 1:nrow(d)) {
+	print(i)
+	observations <- vector()
+	m = 1
 	for (j in 2:ncol(d)) {
 		observations[m] <- d[[i,j]]
 		m = m + 1
 	}
+	print(observation)
+	print("")
+	if(i == 1){
+		vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
+	}else{
+		vt = baumWelch(vt$hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
+	}
 }
 #print(observations)
-vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
-#vt = viterbiTraining(hmm, observations,10)
 print(vt$hmm)
 
 # Sequence of observations
