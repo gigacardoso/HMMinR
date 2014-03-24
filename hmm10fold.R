@@ -1,13 +1,18 @@
 library(HMM)
 
-d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
+predict <- function(exam){
+print(paste(exam, "loading data"))
+d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
+#d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
+print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 vals <- c("H","N","L","VL")
 rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\ALB_Predictions.csv")
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\",exam,"_Predictions.csv"),collapse=""))
+#fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
 	if( p == 1){
@@ -39,11 +44,13 @@ for(p in 1:9){
 #	hmm = initHMM(c("1","2","3","4"), vals,
 #		transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
 #		emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))	
+	print(paste(exam, "initialization"))
 	hmm = initHMM(c("1","2","3","4"), c("H","N","L","VL"), startProbs=(prob (runif (4))),
 		transProbs=apply (matrix (runif(16), 4), 1, prob),
 		emissionProbs=apply (matrix (runif(16), 4), 1, prob))	
 	
 	#train hmm
+	print(paste(exam, "Build training"))
 	m = 1
 	observations <- vector()
 	for (i in 1:nrow(train)) {
@@ -52,9 +59,11 @@ for(p in 1:9){
 			m = m + 1
 		}
 	}
+	print(paste(exam, "BaumWelch"))
 	vt = baumWelch(hmm, observations, maxIterations=10, delta=1E-9, pseudoCount=0)
 
 	#predict
+	print(paste(exam, "Forward"))
 	for (i in 1:nrow(test)) {
 		m = 1
 		observations <- vector()
@@ -100,6 +109,15 @@ for(p in 1:9){
 		}
 	}
 }
-write(text,fileConn,append=TRUE)
+write(text,fileConn)
 close(fileConn)
+}
 
+exams <- c("GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL","ALB","CHE","T-CHO","TP","Type","Activity")
+
+for(i in 1:length(exams)){
+	print(exams[i])
+	predict(exams[i])
+}
+
+predict("GPT")
