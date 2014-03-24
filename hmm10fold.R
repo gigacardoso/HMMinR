@@ -54,7 +54,7 @@ for(p in 1:9){
 	vt = baumWelch(hmm, observations, maxIterations=10, delta=1E-9, pseudoCount=0)
 
 	#predict
-	fileConn<-file("output.txt")
+	fileConn<-file(paste("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\ALB_Predictions.csv"))#,i,".csv"))
 	for (i in 1:nrow(test)) {
 		m = 1
 		observations <- vector()
@@ -93,7 +93,7 @@ for(p in 1:9){
 		obs[8] <- vals[index]
 		print(test[i,])
 		print(obs)
-		writeLines(paste(obs,collapse=","),fileConn)
+		write(paste(obs,collapse=","),fileConn,append=TRUE)
 	}
 	close(fileConn)
 }
