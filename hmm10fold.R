@@ -6,7 +6,21 @@ d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
-vals <- c("H","N","L","VL")
+
+if(exam == "ALB" || exam == "CHE" || exam == "T-CHO" || exam == "TP"){
+	vals <- c("H","N","L","VL")
+}else{
+	if(exam == "WBC" || exam == "PLT"){
+		vals <- c("UL","VL","L","N","H")
+	}else{
+		if(exam == "RBC" || exam == "HGB" || exam == "HCT" || exam == "MCV"){
+			vals <- c("H","N","L")
+		}else{
+			vals <- c("N","H","VH","UH")
+		}
+	}
+}
+
 rows <- nrow(d)
 fold <- floor(rows/10)
 
@@ -45,7 +59,7 @@ for(p in 1:9){
 #		transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
 #		emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))	
 	print(paste(exam, "initialization"))
-	hmm = initHMM(c("1","2","3","4"), c("H","N","L","VL"), startProbs=(prob (runif (4))),
+	hmm = initHMM(c("1","2","3","4"), vals, startProbs=(prob (runif (4))),
 		transProbs=apply (matrix (runif(16), 4), 1, prob),
 		emissionProbs=apply (matrix (runif(16), 4), 1, prob))	
 	
@@ -93,10 +107,10 @@ for(p in 1:9){
 				max <- probs[j]
 			}
 		}
-		if( index != 2){
-			print(observations)
-			print(paste("chosen",vals[index]))
-		}
+		#if( index != 2){
+	#		print(observations)
+	#		print(paste("chosen",vals[index]))
+	#	}
 		obs <- vector()
 		obs[1] <- test[i,1]
 		obs[2] <- vals[index]
@@ -119,5 +133,3 @@ for(i in 1:length(exams)){
 	print(exams[i])
 	predict(exams[i])
 }
-
-predict("GPT")
