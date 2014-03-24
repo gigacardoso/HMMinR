@@ -7,6 +7,7 @@ rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
+fileConn<-file("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
 	if( p == 1){
@@ -54,7 +55,6 @@ for(p in 1:9){
 	vt = baumWelch(hmm, observations, maxIterations=10, delta=1E-9, pseudoCount=0)
 
 	#predict
-	fileConn<-file(paste("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\ALB_Predictions.csv"))#,i,".csv"))
 	for (i in 1:nrow(test)) {
 		m = 1
 		observations <- vector()
@@ -89,12 +89,17 @@ for(p in 1:9){
 			print(paste("chosen",vals[index]))
 		}
 		obs <- vector()
-		obs <- test[i,]
-		obs[8] <- vals[index]
-		print(test[i,])
-		print(obs)
-		write(paste(obs,collapse=","),fileConn,append=TRUE)
+		obs[1] <- test[i,1]
+		obs[2] <- vals[index]
+		#print(test[i,])
+		#print(obs)
+		if( p == 1 && i == 1){
+			text <- paste(obs,collapse=",")
+		}else{
+			text <- c(text,paste(obs,collapse=","))
+		}
 	}
-	close(fileConn)
 }
+write(text,fileConn,append=TRUE)
+close(fileConn)
 
