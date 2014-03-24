@@ -79,6 +79,8 @@ for(p in 1:9){
 			print(observations)
 			print(paste("chosen",vals[index]))
 		}
-	}	
+		#writeLines(observations,fileConn)
+	}
+	close(fileConn)
 }
 
