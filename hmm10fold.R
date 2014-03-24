@@ -1,3 +1,5 @@
+library(HMM)
+
 d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 vals <- c("H","N","L","VL")
 rows <- nrow(d)
@@ -48,19 +50,35 @@ for(p in 1:9){
 	vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
 
 	#predict
+	fileConn<-file("output.txt")
 	for (i in 1:nrow(test)) {
 		m = 1
 		observations <- vector()
+		#get values of row
 		for (j in seq(2, ncol(test)-1, by=1)) {
 			observations[m] <- test[[i,j]]
 			m = m + 1
 		}
+		#forward and save for every possible value
+		probs <- vector()
 		for(j in 1:length(vals)){
 			observations[m] <- vals[j]
 			f <- forward(vt$hmm, observations)
-			print(observations)
-			print(f)
+			#print(observations)
+			#print(f)
+			probs[j] <- f[1,7]
 		}
-	}
+		max <- (-200)
+		for(j in 1:length(vals)){
+			if (probs[j] > max){
+				index <- j
+				max <- probs[j]
+			}
+		}
+		if( index != 2){
+			print(observations)
+			print(paste("chosen",vals[index]))
+		}
+	}	
 }
 
