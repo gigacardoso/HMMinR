@@ -1,6 +1,7 @@
 library(HMM)
 
 d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
+prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 vals <- c("H","N","L","VL")
 rows <- nrow(d)
 fold <- floor(rows/10)
@@ -34,9 +35,12 @@ for(p in 1:9){
 		}
 	}
 	
-	hmm = initHMM(c("1","2","3","4"), vals,
-		transProbs=matrix(c(.5,.2,.1,.2,.2,.5,.2,.1,.1,.15,.55,.2,.2,.15,.15,.5),4),
-		emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))	
+#	hmm = initHMM(c("1","2","3","4"), vals,
+#		transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
+#		emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))	
+	hmm = initHMM(c("1","2","3","4"), c("H","N","L","VL"), startProbs=(prob (runif (4))),
+		transProbs=apply (matrix (runif(16), 4), 1, prob),
+		emissionProbs=apply (matrix (runif(16), 4), 1, prob))	
 	
 	#train hmm
 	m = 1
@@ -47,7 +51,7 @@ for(p in 1:9){
 			m = m + 1
 		}
 	}
-	vt = baumWelch(hmm, observations, maxIterations=100, delta=1E-9, pseudoCount=0)
+	vt = baumWelch(hmm, observations, maxIterations=10, delta=1E-9, pseudoCount=0)
 
 	#predict
 	fileConn<-file("output.txt")
@@ -67,6 +71,11 @@ for(p in 1:9){
 			#print(observations)
 			#print(f)
 			probs[j] <- f[1,7]
+			for(k in 2:4){
+				if (f[k,7] > probs[j]){
+					probs[j] <- f[k,7]
+				}
+			}
 		}
 		max <- (-200)
 		for(j in 1:length(vals)){
@@ -79,7 +88,12 @@ for(p in 1:9){
 			print(observations)
 			print(paste("chosen",vals[index]))
 		}
-		#writeLines(observations,fileConn)
+		obs <- vector()
+		obs <- test[i,]
+		obs[8] <- vals[index]
+		print(test[i,])
+		print(obs)
+		writeLines(paste(obs,collapse=","),fileConn)
 	}
 	close(fileConn)
 }
