@@ -4,10 +4,13 @@ predict <- function(exam){
 print(paste(exam, "loading data"))
 d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
+
+#exams <- c("CHE","T-CHO","TP","Type","Activity")
+
 print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
-
-if(exam == "ALB" || exam == "CHE" || exam == "T-CHO" || exam == "TP"){
+# "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
+if(exam == "ALB"){
 	vals <- c("H","N","L","VL")
 }else{
 	if(exam == "WBC" || exam == "PLT"){
@@ -16,7 +19,19 @@ if(exam == "ALB" || exam == "CHE" || exam == "T-CHO" || exam == "TP"){
 		if(exam == "RBC" || exam == "HGB" || exam == "HCT" || exam == "MCV"){
 			vals <- c("H","N","L")
 		}else{
-			vals <- c("N","H","VH","UH")
+			if(exam == "Type"){
+				vals <- c("B","C","P","PP")
+			} else {
+				if(exam == "CHE" || exam == "T-CHO" || exam == "TP"){
+					vals <- c("H","N","L","VL","VH","P", "PP", "PPP")
+				} else {
+					if(exam == "Activity"){
+						vals <- c("A2","A1","A3","P")
+					} else {
+						vals <- c("N","H","VH","UH")
+					}
+				}
+			}
 		}
 	}
 }
@@ -58,10 +73,15 @@ for(p in 1:9){
 #	hmm = initHMM(c("1","2","3","4"), vals,
 #		transProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4),
 #		emissionProbs=matrix(c(.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25,.25),4))	
+
 	print(paste(exam, "initialization"))
 	hmm = initHMM(c("1","2","3","4"), vals, startProbs=(prob (runif (4))),
 		transProbs=apply (matrix (runif(16), 4), 1, prob),
 		emissionProbs=apply (matrix (runif(16), 4), 1, prob))	
+		
+	#hmm = initHMM(c("1","2"), vals, startProbs=(prob (runif (2))),
+	#	transProbs=apply (matrix (runif(4), 2), 1, prob),
+	#	emissionProbs=apply (matrix (runif(4), 2), 1, prob))
 	
 	#train hmm
 	print(paste(exam, "Build training"))
@@ -126,10 +146,10 @@ for(p in 1:9){
 write(text,fileConn)
 close(fileConn)
 }
-
 exams <- c("GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL","ALB","CHE","T-CHO","TP","Type","Activity")
 
 for(i in 1:length(exams)){
 	print(exams[i])
 	predict(exams[i])
 }
+
