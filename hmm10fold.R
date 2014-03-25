@@ -94,7 +94,7 @@ for(p in 1:9){
 		}
 	}
 	print(paste(exam, "BaumWelch"))
-	vt = baumWelch(hmm, observations, maxIterations=10, delta=1E-9, pseudoCount=0)
+	vt = baumWelch(hmm, observations, maxIterations=50, delta=1E-9, pseudoCount=0)
 
 	#predict
 	print(paste(exam, "Forward"))
@@ -235,7 +235,7 @@ for(p in 1:9){
 		}
 	}
 	print(paste(exam, "BaumWelch"))
-	vt = baumWelch(hmm, observations, maxIterations=10, delta=1E-9, pseudoCount=0)
+	vt = baumWelch(hmm, observations, maxIterations=50, delta=1E-9, pseudoCount=0)
 
 	#predict
 	print(paste(exam, "Forward"))
@@ -285,11 +285,14 @@ close(fileConn)
 #				----------- RUN ------------------------
 #
 
-exams <- c("GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL","ALB","CHE","T-CHO","TP","Type","Activity")
+
+#"GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL","ALB","T-CHO","TP","Type",
+#"CHE","Activity"
+exams <- c("CHE","Activity")
 
 for(i in 1:length(exams)){
 	print(exams[i])
-	#predict(exams[i])
-	predict2(exams[i])
+	predict(exams[i])
+	#predict2(exams[i])
 }
 
