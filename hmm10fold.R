@@ -431,14 +431,16 @@ close(fileConn)
 #
 
 
-#"GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL","ALB","T-CHO","TP","Type",
-#"CHE","Activity"
-exams <- c("CHE","Activity")
+#"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","TP","Type","CHE","Activity"
+#"T-BIL",
+exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","TP","Type","CHE","Activity")
 
-#for(i in 1:length(exams)){
-#	print(exams[i])
-	system.time(predict("T-BIL", 50))
+for(i in 1:length(exams)){
+	print(exams[i])
+#	system.time(predict("T-BIL", 50))
 #	predict2(exams[i])
-#	system.time(predict7("T-BIL", 10))
-#}
+	exam <- exams[i]
+	print(exam)
+	system.time(predict7(exam, 10))
+}
 
