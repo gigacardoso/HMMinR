@@ -1,6 +1,6 @@
 library(HMM)
 
-predict <- function(exam, iter){
+predict <- function(exam, iter, steps){
 print(paste(exam, "loading data"))
 d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
@@ -113,10 +113,10 @@ for(p in 1:9){
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
-			probs[j] <- f[1,7]
+			probs[j] <- f[1,steps]
 			for(k in 2:4){
-				if (f[k,7] > probs[j]){
-					probs[j] <- f[k,7]
+				if (f[k,steps] > probs[j]){
+					probs[j] <- f[k,steps]
 				}
 			}
 		}
@@ -147,7 +147,7 @@ write(text,fileConn)
 close(fileConn)
 }
 
-predict2 <- function(exam, iter){
+predict2 <- function(exam, iter, steps){
 print(paste(exam, "loading data"))
 d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
@@ -253,10 +253,10 @@ for(p in 1:9){
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
-			probs[j] <- f[1,7]
+			probs[j] <- f[1,steps]
 			k <- 2
-			if (f[k,7] > probs[j]){
-				probs[j] <- f[k,7]
+			if (f[k,steps] > probs[j]){
+				probs[j] <- f[k,steps]
 			}		
 		}
 		max <- (-200)
@@ -280,7 +280,7 @@ write(text,fileConn)
 close(fileConn)
 }
 
-predict7 <- function(exam, iter){
+predict7 <- function(exam, iter, steps){
 print(paste(exam, "loading data"))
 d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
@@ -291,7 +291,7 @@ print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
 if(exam == "ALB"){
-	vals <- c("H","N","L","VL")
+	vals <- c("H","N","L","VL","P", "PP", "PPP")
 }else{
 	if(exam == "WBC" || exam == "PLT"){
 		vals <- c("UL","VL","L","N","H")
@@ -300,13 +300,13 @@ if(exam == "ALB"){
 			vals <- c("H","N","L")
 		}else{
 			if(exam == "Type"){
-				vals <- c("B","C","P","PP")
+				vals <- c("B","C","P","PP","PA", "PPA", "APPP")
 			} else {
 				if(exam == "CHE" || exam == "T-CHO" || exam == "TP"){
-					vals <- c("H","N","L","VL","VH","P", "PP", "PPP")
+					vals <- c("H","N","L","VL","VH","P", "PP")
 				} else {
 					if(exam == "Activity"){
-						vals <- c("A2","A1","A3","P")
+						vals <- c("A2","A1","A3","P","PA", "APP", "APPP")
 					} else {
 						vals <- c("N","H","VH","UH","P", "PP", "PPP")
 					}
@@ -391,10 +391,10 @@ for(p in 1:9){
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
-			probs[j] <- f[1,7]
+			probs[j] <- f[1,steps]
 			for(k in 2:7){
-				if (f[k,7] > probs[j]){
-					probs[j] <- f[k,7]
+				if (f[k,steps] > probs[j]){
+					probs[j] <- f[k,steps]
 				}
 			}
 		}
@@ -431,16 +431,15 @@ close(fileConn)
 #
 
 
-#"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","TP","Type","CHE","Activity"
-#"T-BIL",
-exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","TP","Type","CHE","Activity")
+#"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
+exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
 for(i in 1:length(exams)){
-	print(exams[i])
-#	system.time(predict("T-BIL", 50))
-#	predict2(exams[i])
-	exam <- exams[i]
-	print(exam)
-	system.time(predict7(exam, 10))
+	print(exams)
+	predict(exams[i], 10,3)
+	#predict2(exams[i], 10,3)
+	#predict(exams[i], 50,3)
+	#predict7(exams[i], 10,3)
+	#predict7(exams[i], 25,3)
 }
 
