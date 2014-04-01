@@ -436,10 +436,10 @@ exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","T
 
 for(i in 1:length(exams)){
 	print(exams)
-	predict(exams[i], 10,3)
-	#predict2(exams[i], 10,3)
-	#predict(exams[i], 50,3)
-	#predict7(exams[i], 10,3)
-	#predict7(exams[i], 25,3)
+	#predict(exams[i], 10,12)
+	#predict2(exams[i], 10,12)
+	predict(exams[i], 50,3)
+	#predict7(exams[i], 10,12)
+	#predict7(exams[i], 25,12)
 }
 
