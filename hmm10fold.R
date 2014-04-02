@@ -40,7 +40,7 @@ rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
@@ -187,7 +187,7 @@ rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
@@ -320,7 +320,7 @@ rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
@@ -432,7 +432,8 @@ close(fileConn)
 
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
-exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
+#"GPT","GOT","ZTT"
+exams <- c("TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
 for(i in 1:length(exams)){
 	print(exams)
