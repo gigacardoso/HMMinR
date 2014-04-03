@@ -1,6 +1,7 @@
-library(HMM)
+library(doSNOW)
 
 predict <- function(exam, iter, steps){
+library(HMM)
 print(paste(exam, "loading data"))
 d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
@@ -433,14 +434,18 @@ close(fileConn)
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
 #"GPT","GOT","ZTT"
-exams <- c("TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
+exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
-for(i in 1:length(exams)){
+cl <- makeCluster(3, type="SOCK")
+registerDoSNOW(cl)
+
+foreach(i=1:length(exams) , .combine=rbind) %dopar% {
 	print(exams)
 	#predict(exams[i], 10,12)
 	#predict2(exams[i], 10,12)
-	predict(exams[i], 50,3)
+	predict(exams[i], 5, 3)
 	#predict7(exams[i], 10,12)
 	#predict7(exams[i], 25,12)
 }
 
+stopCluster(cl)
