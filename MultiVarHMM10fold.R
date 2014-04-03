@@ -15,12 +15,6 @@ prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
 vals <- c(
 "H_ALB","N_ALB","L_ALB","VL_ALB",
-"UL_WBC","VL_WBC","L_WBC","N_WBC","H_WBC",
-"UL_PLT","VL_PLT","L_PLT","N_PLT","H_PLT",
-"H_RBC","N_RBC","L_RBC",
-"H_HGB","N_HGB","L_HGB",
-"H_HCT","N_HCT","L_HCT",
-"H_MCV","N_MCV","L_MCV",
 "B_Type","C_Type",
 "H_CHE","N_CHE","L_CHE","VL_CHE","VH_CHE",
 "H_T-CHO","N_T-CHO","L_T-CHO","VL_T-CHO","VH_T-CHO",
@@ -208,14 +202,14 @@ getPossibleValues <- function(exam){
 #"GPT"
 exams <- c("GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
-cl <- makeCluster(3, type="SOCK")
+cl <- makeCluster(4, type="SOCK")
 registerDoSNOW(cl)
 
 foreach(i=1:length(exams) , .combine=rbind) %dopar% {
 	print(exams)
 	#predict(exams[i], 10,12)
 	#predict2(exams[i], 10,12)
-	predict(exams[i], 5, 7)
+	predict(exams[i], 5, 3)
 	#predict7(exams[i], 10,12)
 	#predict7(exams[i], 25,12)
 }
