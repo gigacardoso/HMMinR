@@ -202,7 +202,7 @@ getPossibleValues <- function(exam){
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
 #"GPT"
-exams <- c("GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
+exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
 cl <- makeCluster(4, type="SOCK")
 registerDoSNOW(cl)
