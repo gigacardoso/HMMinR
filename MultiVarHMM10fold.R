@@ -34,7 +34,7 @@ rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
@@ -112,7 +112,7 @@ for(p in 1:9){
 		probs <- vector()
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
-			observations[(m+1)] <- "$"
+			#observations[(m+1)] <- "$"
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
@@ -148,6 +148,7 @@ for(p in 1:9){
 }
 write(text,fileConn)
 close(fileConn)
+print(paste(exam, "<-----------------------------------   DONE"))
 }
 
 
@@ -208,10 +209,13 @@ exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","T
 cl <- makeCluster(4, type="SOCK")
 registerDoSNOW(cl)
 
+writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt")
+
 foreach(i=1:length(exams) , .combine=rbind) %dopar% {
+	sink("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt", append=TRUE)
 	print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(4,exams[i], 1, 3)
+	predict(4,exams[i], 1, 7)
 }
 
 stopCluster(cl)
