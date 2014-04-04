@@ -112,6 +112,7 @@ for(p in 1:9){
 		probs <- vector()
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
+			observations[(m+1)] <- "$"
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
@@ -135,7 +136,7 @@ for(p in 1:9){
 	#	}
 		obs <- vector()
 		obs[1] <- test[i,1]
-		obs[2] <- vals[index]
+		obs[2] <- values[index]
 		#print(test[i,])
 		#print(obs)
 		if( p == 1 && i == 1){
@@ -210,7 +211,7 @@ registerDoSNOW(cl)
 foreach(i=1:length(exams) , .combine=rbind) %dopar% {
 	print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(4,exams[i], 5, 3)
+	predict(4,exams[i], 1, 3)
 }
 
 stopCluster(cl)

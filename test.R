@@ -111,6 +111,7 @@ for(p in 1:9){
 		probs <- vector()
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
+			observations[(m+1)] <- "$"
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
@@ -134,7 +135,7 @@ for(p in 1:9){
 	#	}
 		obs <- vector()
 		obs[1] <- test[i,1]
-		obs[2] <- vals[index]
+		obs[2] <- values[index]
 		#print(test[i,])
 		#print(obs)
 		if( p == 1 && i == 1){
