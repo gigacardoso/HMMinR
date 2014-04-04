@@ -439,7 +439,10 @@ exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","T
 cl <- makeCluster(3, type="SOCK")
 registerDoSNOW(cl)
 
+writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt")
+
 foreach(i=1:length(exams) , .combine=rbind) %dopar% {
+	sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
 	print(exams)
 	#predict(exams[i], 10,12)
 	#predict2(exams[i], 10,12)

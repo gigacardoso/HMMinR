@@ -206,7 +206,7 @@ getPossibleValues <- function(exam){
 #"GPT"
 exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
-cl <- makeCluster(4, type="SOCK")
+cl <- makeCluster(3, type="SOCK")
 registerDoSNOW(cl)
 
 writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt")
@@ -215,7 +215,7 @@ foreach(i=1:length(exams) , .combine=rbind) %dopar% {
 	sink("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt", append=TRUE)
 	print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(4,exams[i], 1, 7)
+	predict(4,exams[i], 5, 7)
 }
 
 stopCluster(cl)
