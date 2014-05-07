@@ -1,40 +1,47 @@
-
 library(doSNOW)
 
 predict <- function(states, exam, iter, steps){
 library(HMM)
 print(paste(exam, "loading data"))
-d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\multidata\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
+d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 
-#exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
+#exams <- c("CHE","T-CHO","TP","Type","Activity")
 
-#sprint(summary(d))
+print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
-vals <- c(
-"H_ALB","N_ALB","L_ALB","VL_ALB",
-"B_Type","C_Type",
-"H_CHE","N_CHE","L_CHE","VL_CHE","VH_CHE",
-"H_T-CHO","N_T-CHO","L_T-CHO","VL_T-CHO","VH_T-CHO",
-"H_TP","N_TP","L_TP","VL_TP","VH_TP",
-"A1_Activity","A2_Activity","A3_Activity",
-"N_GPT","H_GPT","VH_GPT","UH_GPT",
-"N_GOT","H_GOT","VH_GOT","UH_GOT",
-"N_ZTT","H_ZTT","VH_ZTT","UH_ZTT",
-"N_TTT","H_TTT","VH_TTT","UH_TTT",
-"N_D-BIL","H_D-BIL","VH_D-BIL","UH_D-BIL",
-"N_I-BIL","H_I-BIL","VH_I-BIL","UH_I-BIL",
-"N_T-BIL","H_T-BIL","VH_T-BIL","UH_T-BIL",
-"$")
-
-
+if(exam == "ALB"){
+	vals <- c("H","N","L","VL")
+}else{
+	if(exam == "WBC" || exam == "PLT"){
+		vals <- c("UL","VL","L","N","H")
+	}else{
+		if(exam == "RBC" || exam == "HGB" || exam == "HCT" || exam == "MCV"){
+			vals <- c("H","N","L")
+		}else{
+			if(exam == "Type"){
+				vals <- c("B","C","P","PP")
+			} else {
+				if(exam == "CHE" || exam == "T-CHO" || exam == "TP"){
+					vals <- c("H","N","L","VL","VH","P", "PP", "PPP")
+				} else {
+					if(exam == "Activity"){
+						vals <- c("A2","A1","A3","P")
+					} else {
+						vals <- c("N","H","VH","UH")
+					}
+				}
+			}
+		}
+	}
+}
 
 rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
@@ -71,14 +78,11 @@ for(p in 1:9){
 	for(i in 1:(states-2)){
 		stat <- c( stat , paste("s",i))
 	}
+	
 	print(paste(exam, "initialization"))
 	hmm = initHMM(stat, vals, startProbs=(prob (runif (4))),
 		transProbs=apply (matrix (runif(states*states), states), 1, prob),
 		emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))	
-
-	#hmm = initHMM(c("1","2"), vals, startProbs=(prob (runif (2))),
-	#	transProbs=apply (matrix (runif(4), 2), 1, prob),
-	#	emissionProbs=apply (matrix (runif(4), 2), 1, prob))
 	
 	#train hmm
 	print(paste(exam, "Build training"))
@@ -89,8 +93,8 @@ for(p in 1:9){
 			observations[m] <- train[[i,j]]
 			m = m + 1
 		}
-		observations[m] <- "$"
-		m = m + 1
+		#observations[m] <- "$"
+		#m = m + 1
 	}
 	print(paste(exam, "BaumWelch", "iter ->", iter))
 	vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
@@ -151,65 +155,62 @@ close(fileConn)
 print(paste(exam, "<-----------------------------------   DONE"))
 }
 
-
 getPossibleValues <- function(exam){
 	if(exam == "ALB"){
-		vals <- c("H_ALB","N_ALB","L_ALB","VL_ALB")
+		vals <- c("H","N","L","VL")
 	}		
 	if(exam == "Type"){
-	vals <- c("B_Type","C_Type")
+	vals <- c("B","C")
 	}
 	if(exam == "CHE"){
-	vals <- c("H_CHE","N_CHE","L_CHE","VL_CHE","VH_CHE")
+	vals <- c("H","N","L","VL","VH")
 	} 
 	if(exam == "T-CHO") {
-		vals <- c("H_T-CHO","N_T-CHO","L_T-CHO","VL_T-CHO","VH_T-CHO")
+		vals <- c("H","N","L","VL","VH")
 	}
 	if(exam == "TP") {
-		vals <- c("H_TP","N_TP","L_TP","VL_TP","VH_TP")
+		vals <- c("H","N","L","VL","VH")
 	}
 	if(exam == "T-BIL") {
-		vals <- c("N_T-BIL","H_T-BIL","VH_T-BIL","UH_T-BIL")
+		vals <- c("N","H","VH","UH")
 	}
 	if(exam == "Activity"){
-		vals <- c("A1_Activity","A2_Activity","A3_Activity")
+		vals <- c("A1","A2","A3")
 	}
 	if(exam == "GPT"){
-		vals <- c("N_GPT","H_GPT","VH_GPT","UH_GPT")
+		vals <- c("N","H","VH","UH")
 	}
 	if(exam == "GOT"){
-		vals <- c("N_GOT","H_GOT","VH_GOT","UH_GOT")
+		vals <- c("N","H","VH","UH")
 	}
 	if(exam == "ZTT"){
-		vals <- c("N_ZTT","H_ZTT","VH_ZTT","UH_ZTT")
+		vals <- c("N","H","VH","UH")
 	}
 	if(exam == "TTT"){
-		vals <- c("N_TTT","H_TTT","VH_TTT","UH_TTT")
+		vals <- c("N","H","VH","UH")
 	}
 	if(exam == "D-BIL"){
-		vals <- c("N_D-BIL","H_D-BIL","VH_D-BIL","UH_D-BIL")
+		vals <- c("N","H","VH","UH")
 	}
 	if(exam == "I-BIL"){
-		vals <- c("N_I-BIL","H_I-BIL","VH_I-BIL","UH_I-BIL")
+		vals <- c("N","H","VH","UH")
 	}
 	print(vals)
 	return(vals)
 }
 
-
-
 #
 #				----------- RUN ------------------------
 #
 
+
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
-#"GPT"
 exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
-#cl <- makeCluster(3, type="SOCK")
-#registerDoSNOW(cl)
+cl <- makeCluster(3, type="SOCK")
+registerDoSNOW(cl)
 
-writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt")
+writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt")
 
 for(i in 1:length(exams) ) { # , .combine=rbind) %dopar% {
 	sink("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt", append=TRUE)
@@ -218,4 +219,4 @@ for(i in 1:length(exams) ) { # , .combine=rbind) %dopar% {
 	predict(4,exams[i], 5, 3)
 }
 
-#stopCluster(cl)
+stopCluster(cl)
