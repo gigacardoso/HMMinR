@@ -12,7 +12,8 @@ print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
 vals <- getPossibleValues(exam)
-#vals <- c(vals, "$")
+
+vals <- c(vals, "$")
 
 rows <- nrow(d)
 fold <- floor(rows/10)
@@ -55,10 +56,19 @@ for(p in 1:9){
 	for(i in 1:(states-2)){
 		stat <- c( stat , paste("s",i))
 	}
+	
+	m <- matrix(0, states, states)
+	for (i in 1:states){
+		if (i < states){ 
+			m[i,i+1] <- 1
+		}else{
+			m[i,1] <- 1
+		}
+	}
 
 	print(paste(exam, "initialization"))
 	hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
-		transProbs=apply (matrix (runif(states*states), states), 1, prob),
+		transProbs=m,
 		emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))	
 	#print(hmm)
 	#train hmm
@@ -70,8 +80,8 @@ for(p in 1:9){
 			observations[m] <- train[[i,j]]
 			m = m + 1
 		}
-		#observations[m] <- "$"
-		#m = m + 1
+		observations[m] <- "$"
+		m = m + 1
 	}
 	print(paste(exam, "BaumWelch", "iter ->", iter))
 	vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
@@ -93,7 +103,7 @@ for(p in 1:9){
 		probs <- vector()
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
-			#observations[(m+1)] <- "$"
+			observations[(m+1)] <- "$"
 			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
@@ -190,10 +200,10 @@ exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","T
 #writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt")
 
 for(i in 1:length(exams) ) { # , .combine=rbind) %dopar% {
-#	sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
+	#sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
 	print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(4,exams[i], 5, 3)
+	predict(3,exams[i], 5, 3)
 	#sink()
 }
 

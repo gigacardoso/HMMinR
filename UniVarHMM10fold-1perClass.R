@@ -12,6 +12,7 @@ print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
 vals <- getPossibleValues(exam)
+numSymb <- length(vals)
 #vals <- c(vals, "$")
 
 rows <- nrow(d)
@@ -55,26 +56,47 @@ for(p in 1:9){
 	for(i in 1:(states-2)){
 		stat <- c( stat , paste("s",i))
 	}
-
+	
 	print(paste(exam, "initialization"))
-	hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
-		transProbs=apply (matrix (runif(states*states), states), 1, prob),
-		emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))	
-	#print(hmm)
-	#train hmm
-	print(paste(exam, "Build training"))
-	m = 1
-	observations <- vector()
-	for (i in 1:nrow(train)) {
-		for (j in 2:ncol(train)) {
-			observations[m] <- train[[i,j]]
-			m = m + 1
+	
+
+	hmms <- vector()
+	for(symb in 1:numSymb){
+		s <- vals[symb]
+		#print(s)
+		hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
+			transProbs=apply (matrix (runif(states*states), states), 1, prob),
+			emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))	
+
+		#print(hmm)
+		#train hmm
+		print(paste(exam, "Build training", s))
+		m = 1
+		
+		observations <- vector()
+		for (i in 1:nrow(train)) {
+			if(train[i,ncol(train)] == s){
+				for (j in 2:ncol(train)) {
+					observations[m] <- train[[i,j]]
+					m = m + 1
+				}
+				#observations[m] <- "$"
+				#m = m + 1
+			}
 		}
-		#observations[m] <- "$"
-		#m = m + 1
+		print(paste(exam, "BaumWelch", "iter ->", iter))
+		#print(observations)
+		if(length(observations) > 0){
+		vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
+		}else {
+			hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
+			transProbs=matrix(0, states, states),
+			emissionProbs= matrix(0, states, length(vals)))
+			vt$hmm <- hmm
+		}
+		hmms <- c(hmms,vt)
+		#print(vt$hmm)
 	}
-	print(paste(exam, "BaumWelch", "iter ->", iter))
-	vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
 	#print(vt$hmm)
 	#predict
 	values <- getPossibleValues(exam)
@@ -89,12 +111,15 @@ for(p in 1:9){
 			m = m + 1
 		}
 		#forward and save for every possible value
-		
 		probs <- vector()
+		index<-1
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
 			#observations[(m+1)] <- "$"
-			f <- forward(vt$hmm, observations)
+			#print(j)
+			#print(observations)
+			#print(hmms[index]$hmm)
+			f <- forward(hmms[index]$hmm, observations)
 			#print(observations)
 			#print(f)
 			probs[j] <- f[1,ncol(f)]
@@ -103,6 +128,7 @@ for(p in 1:9){
 					probs[j] <- f[k,ncol(f)]
 				}
 			}
+			index <- index+2
 		}
 		max <- (-2000000)
 		for(j in 1:length(values)){
@@ -182,8 +208,9 @@ getPossibleValues <- function(exam){
 
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
-exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
+exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
+#exams <- c("Activity")
 #cl <- makeCluster(3, type="SOCK")
 #registerDoSNOW(cl)
 
