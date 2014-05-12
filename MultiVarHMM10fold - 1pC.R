@@ -3,8 +3,8 @@ library(doSNOW)
 predict <- function(states, exam, iter, steps){
 library(HMM)
 print(paste(exam, "loading data"))
-d <- read.csv(file=paste(c("Z:\\Documents\\HMMinR-master\\multidata\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
-#d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
+#d <- read.csv(file=paste(c("Z:\\Documents\\HMMinR-master\\multidata\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
+d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\multidata\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 
 #exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
@@ -26,7 +26,8 @@ rows <- nrow(d)
 fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
-fileConn<-file(paste(c("Z:\\Documents\\Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
+#fileConn<-file(paste(c("Z:\\Documents\\Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	print(p)
@@ -223,16 +224,20 @@ getPossibleValues <- function(exam){
 #"GPT"
 exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
-#cl <- makeCluster(3, type="SOCK")
-#registerDoSNOW(cl)
+cl <- makeCluster(3, type="SOCK")
+registerDoSNOW(cl)
 
-writeLines(c(""), "Z:\\Documents\\Multi\\__log.txt")
+#writeLines(c(""), "Z:\\Documents\\Multi\\__log.txt")
+writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt")
 
-for(i in 1:length(exams) ) { # , .combine=rbind) %dopar% {
-	sink("Z:\\Documents\\Multi\\__log.txt", append=TRUE)
+#for(i in 1:length(exams) ) { 
+foreach(i = 1:length(exams), .combine=rbind) %dopar% {
+	#sink("Z:\\Documents\\Multi\\__log.txt", append=TRUE)
+	sink("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt", append=TRUE)
 	print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(4,exams[i], 5, 3)
+	predict(12,exams[i], 5, 12)
+	sink()
 }
 
-#stopCluster(cl)
+stopCluster(cl)
