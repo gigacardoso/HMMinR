@@ -64,51 +64,28 @@ for(p in 1:9){
 		stat <- c( stat , paste("s",i))
 	}
 	print(paste(exam, "initialization"))
+	hmm = initHMM(stat, vals, startProbs=(prob (runif (4))),
+		transProbs=apply (matrix (runif(states*states), states), 1, prob),
+		emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))	
+
+	#hmm = initHMM(c("1","2"), vals, startProbs=(prob (runif (2))),
+	#	transProbs=apply (matrix (runif(4), 2), 1, prob),
+	#	emissionProbs=apply (matrix (runif(4), 2), 1, prob))
 	
-	
-	hmms <- vector()
-	for(symb in 1:numSymb){
-		s <- vals[symb]
-		#print(s)
-		hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
-			transProbs=apply (matrix (runif(states*states), states), 1, prob),
-			emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))
-			
-		#hmm = initHMM(c("1","2"), vals, startProbs=(prob (runif (2))),
-		#	transProbs=apply (matrix (runif(4), 2), 1, prob),
-		#	emissionProbs=apply (matrix (runif(4), 2), 1, prob))
-		
-		#print(hmm)
-		#train hmm
-		print(paste(exam, "Build training"))
-		m = 1
-		
-		observations <- vector()
-		for (i in 1:nrow(train)) {
-			if(train[i,ncol(train)] == s){
-				for (j in 2:ncol(train)) {
-					observations[m] <- train[[i,j]]
-					m = m + 1
-				}
-				#observations[m] <- "$"
-				#m = m + 1
-			}
+	#train hmm
+	print(paste(exam, "Build training"))
+	m = 1
+	observations <- vector()
+	for (i in 1:nrow(train)) {
+		for (j in 2:ncol(train)) {
+			observations[m] <- train[[i,j]]
+			m = m + 1
 		}
-		print(paste(exam, "BaumWelch", "iter ->", iter))
-		#print(observations)
-		#print(length(observations))
-		if(length(observations) > 52){
-			vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
-		}else {
-			vt <- list(hmm = "11", difference = "as")
-			hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
-			transProbs=matrix(0, states, states),
-			emissionProbs= matrix(0, states, length(vals)))
-			vt$hmm <- hmm
-		}
-		hmms <- c(hmms,vt)
-		#print(vt$hmm)
+		observations[m] <- "$"
+		m = m + 1
 	}
+	print(paste(exam, "BaumWelch", "iter ->", iter))
+	vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
 
 	#predict
 	values <- getPossibleValues(exam)
@@ -125,20 +102,18 @@ for(p in 1:9){
 		#forward and save for every possible value
 		
 		probs <- vector()
-		index<-1
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
 			#observations[(m+1)] <- "$"
-			f <- forward(hmms[index]$hmm, observations)
+			f <- forward(vt$hmm, observations)
 			#print(observations)
 			#print(f)
 			probs[j] <- f[1,ncol(f)]
-			for(k in 2:states){
+			for(k in 2:4){
 				if (f[k,ncol(f)] > probs[j]){
 					probs[j] <- f[k,ncol(f)]
 				}
 			}
-			index <- index+2
 		}
 		max <- (-2000000)
 		for(j in 1:length(values)){
