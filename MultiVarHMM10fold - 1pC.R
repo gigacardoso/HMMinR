@@ -11,14 +11,14 @@ d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\multid
 #sprint(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
-vals <- getPossibleValues(exam)
-numSymb <- length(vals)
+valis <- getPossibleValues(exam)
+numSymb <- length(valis)
 vals <- c(
 "H","N","L","VL",
 "B","C",
 "VH",
 "A1","A2","A3",
-"UH")
+"UH","$")
 
 
 
@@ -69,8 +69,8 @@ for(p in 1:9){
 	
 	hmms <- vector()
 	for(symb in 1:numSymb){
-		s <- vals[symb]
-		#print(s)
+		s <- valis[symb]
+		
 		hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
 			transProbs=apply (matrix (runif(states*states), states), 1, prob),
 			emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))
@@ -79,20 +79,24 @@ for(p in 1:9){
 		#	transProbs=apply (matrix (runif(4), 2), 1, prob),
 		#	emissionProbs=apply (matrix (runif(4), 2), 1, prob))
 		
-		#print(hmm)
+		print(hmm)
 		#train hmm
 		print(paste(exam, "Build training"))
 		m = 1
 		
 		observations <- vector()
 		for (i in 1:nrow(train)) {
+			#print("class <------------------------------------------------------------")
+			#print(train[i,])
+			#print(s)
+			#print(train[i,ncol(train)])
 			if(train[i,ncol(train)] == s){
 				for (j in 2:ncol(train)) {
 					observations[m] <- train[[i,j]]
 					m = m + 1
 				}
-				#observations[m] <- "$"
-				#m = m + 1
+				observations[m] <- "$"
+				m = m + 1
 			}
 		}
 		print(paste(exam, "BaumWelch", "iter ->", iter))
@@ -108,7 +112,7 @@ for(p in 1:9){
 			vt$hmm <- hmm
 		}
 		hmms <- c(hmms,vt)
-		#print(vt$hmm)
+		print(vt$hmm)
 	}
 
 	#predict
@@ -126,11 +130,11 @@ for(p in 1:9){
 		#forward and save for every possible value
 		
 		probs <- vector()
-		index<-1
+		ind<-1
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
 			#observations[(m+1)] <- "$"
-			f <- forward(hmms[index]$hmm, observations)
+			f <- forward(hmms[ind]$hmm, observations)
 			#print(observations)
 			#print(f)
 			probs[j] <- f[1,ncol(f)]
@@ -139,7 +143,7 @@ for(p in 1:9){
 					probs[j] <- f[k,ncol(f)]
 				}
 			}
-			index <- index+2
+			ind <- ind+2
 		}
 		max <- (-2000000)
 		for(j in 1:length(values)){
@@ -152,6 +156,9 @@ for(p in 1:9){
 	#		print(observations)
 	#		print(paste("chosen",vals[index]))
 	#	}
+		#print("---------------")
+		#print(values)
+		#print(index)
 		obs <- vector()
 		obs[1] <- test[i,1]
 		obs[2] <- values[index]
@@ -221,7 +228,7 @@ getPossibleValues <- function(exam){
 #
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
-#"GPT"
+#"ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
 exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
 
 cl <- makeCluster(3, type="SOCK")
@@ -236,7 +243,7 @@ foreach(i = 1:length(exams), .combine=rbind) %dopar% {
 	sink("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt", append=TRUE)
 	print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(12,exams[i], 5, 12)
+	predict(3,exams[i], 1, 3)
 	sink()
 }
 
