@@ -2,13 +2,13 @@
 
 predict <- function(states, exam, iter, steps){
 library(HMM)
-print(paste(exam, "loading data"))
+#print(paste(exam, "loading data"))
 d <- read.csv(file=paste(c("C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\",exam,".csv"),collapse=""),head=TRUE,sep=",", stringsAsFactors=FALSE)
 #d <- read.csv(file="C:\\Users\\Daniel\\Documents\\GitHub\\HMMinR\\data\\ALB.csv",head=TRUE,sep=",", stringsAsFactors=FALSE)
 
 #exams <- c("CHE","T-CHO","TP","Type","Activity")
 
-print(summary(d))
+#print(summary(d))
 prob <- function (x) {x / sum (x)}  # Makes it a probability (it sums to 1)
 # "P", "PP" and "PPP" sao fillers para que o num de simbolos seja multiplo do num de estados
 vals <- getPossibleValues(exam)
@@ -22,18 +22,18 @@ folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
 fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM\\new\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
-	print(p)
+	#print(p)
 	if( p == 1){
 	train <- d[folds[p+1]+1:nrow(d)-fold,]
 	test <- d[folds[p]:folds[p+1],]
-	print(paste("train ", folds[p+1]+1,"-" , nrow(d)))
-	print(paste("test ", folds[p],"-" , folds[p+1]))
+	#print(paste("train ", folds[p+1]+1,"-" , nrow(d)))
+	#print(paste("test ", folds[p],"-" , folds[p+1]))
 	}else{
 		if(p == 9){
 			train <- d[1:folds[p]-1,]
 			test <- d[folds[p]:nrow(d),]
-			print(paste("train ", 1,"-",folds[p]-1))
-			print(paste("test ", folds[p],"-" , nrow(d)))
+			#print(paste("train ", 1,"-",folds[p]-1))
+			#print(paste("test ", folds[p],"-" , nrow(d)))
 		}else {
 			train1 <- d[1:folds[p]-1,]
 			train2 <- d[folds[p+1]+1:nrow(d),]
@@ -43,9 +43,9 @@ for(p in 1:9){
 			for(k in 2:size){
 				train <- rbind(train, train2[k,])
 			}
-			print(paste("train ", 1,"-",folds[p]-1))
-			print(paste("test ", folds[p],"-" , folds[p+1]))
-			print(paste("train ", folds[p+1]+1,"-",nrow(d)))
+			#print(paste("train ", 1,"-",folds[p]-1))
+			#print(paste("test ", folds[p],"-" , folds[p+1]))
+			#print(paste("train ", folds[p+1]+1,"-",nrow(d)))
 		}
 	}
 	
@@ -57,20 +57,20 @@ for(p in 1:9){
 		stat <- c( stat , paste("s",i))
 	}
 	
-	print(paste(exam, "initialization"))
+	#print(paste(exam, "initialization"))
 	
 
 	hmms <- vector()
 	for(symb in 1:numSymb){
 		s <- vals[symb]
-		#print(s)
+		##print(s)
 		hmm = initHMM(stat, vals, startProbs=(prob (runif (states))),
 			transProbs=apply (matrix (runif(states*states), states), 1, prob),
 			emissionProbs=apply (matrix (runif(states*length(vals)), states), 1, prob))	
 
-		#print(hmm)
+		##print(hmm)
 		#train hmm
-		print(paste(exam, "Build training", s))
+		#print(paste(exam, "Build training", s))
 		m = 1
 		
 		observations <- vector()
@@ -84,9 +84,9 @@ for(p in 1:9){
 				#m = m + 1
 			}
 		}
-		print(paste(exam, "BaumWelch", "iter ->", iter))
-		print(observations)
-		print(length(observations))
+		#print(paste(exam, "BaumWelch", "iter ->", iter))
+		#print(observations)
+		#print(length(observations))
 		if(length(observations) > 52){
 		vt = baumWelch(hmm, observations, maxIterations=iter, delta=1E-9, pseudoCount=0)
 		}else {
@@ -97,13 +97,13 @@ for(p in 1:9){
 			vt$hmm <- hmm
 		}
 		hmms <- c(hmms,vt)
-		#print(vt$hmm)
+		##print(vt$hmm)
 	}
-	#print(vt$hmm)
+	##print(vt$hmm)
 	#predict
 	values <- getPossibleValues(exam)
 	
-	print(paste(exam, "Forward"))
+	#print(paste(exam, "Forward"))
 	for (i in 1:nrow(test)) {
 		m = 1
 		observations <- vector()
@@ -118,12 +118,12 @@ for(p in 1:9){
 		for(j in 1:length(values)){
 			observations[m] <- values[j]
 			#observations[(m+1)] <- "$"
-			#print(j)
-			#print(observations)
-			#print(hmms[index]$hmm)
+			##print(j)
+			##print(observations)
+			##print(hmms[index]$hmm)
 			f <- forward(hmms[index]$hmm, observations)
-			#print(observations)
-			#print(f)
+			##print(observations)
+			##print(f)
 			probs[j] <- f[1,ncol(f)]
 			for(k in 2:states){
 				if (f[k,ncol(f)] > probs[j]){
@@ -140,14 +140,14 @@ for(p in 1:9){
 			}
 		}
 		#if( index != 2){
-	#		print(observations)
-	#		print(paste("chosen",vals[index]))
+	#		#print(observations)
+	#		#print(paste("chosen",vals[index]))
 	#	}
 		obs <- vector()
 		obs[1] <- test[i,1]
 		obs[2] <- values[index]
-		#print(test[i,])
-		#print(obs)
+		##print(test[i,])
+		##print(obs)
 		if( p == 1 && i == 1){
 			text <- paste(obs,collapse=",")
 		}else{
@@ -157,7 +157,7 @@ for(p in 1:9){
 }
 write(text,fileConn)
 close(fileConn)
-print(paste(exam, "<-----------------------------------   DONE"))
+#print(paste(exam, "<-----------------------------------   DONE"))
 }
 
 getPossibleValues <- function(exam){
@@ -200,7 +200,7 @@ getPossibleValues <- function(exam){
 	if(exam == "I-BIL"){
 		vals <- c("N","H","VH","UH")
 	}
-	print(vals)
+	#print(vals)
 	return(vals)
 }
 
@@ -211,19 +211,33 @@ getPossibleValues <- function(exam){
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
 
-exams <- c("GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity")
-cl <- makeCluster(3, type="SOCK")
-registerDoSNOW(cl)
+exams <- c("GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL","ALB","CHE","T-CHO","TP","Type","Activity")
+#cl <- makeCluster(3, type="SOCK")
+#registerDoSNOW(cl)
 
-writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt")
+#writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt")
+sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
+tates <- 12
+ter <- 1
+teps <- 12
+print("--------------------------------------UNI----------------------------------------")
+print(paste("states: ",tates,"iter: ",ter, "steps: ",teps))
 
-foreach(i = 1:length(exams) , .combine=rbind) %dopar% {
-#for(i in 1:length(exams)){
-	sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
-	print(exams)
+#foreach(i = 1:length(exams) , .combine=rbind) %dopar% {
+for(i in 1:length(exams)){
+	#sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
+	#print(exams)
 	#predict(#states,exam, #iter, #steps)
-	predict(12,exams[i], 15, 12)
-	sink()
+	
+	# Start the clock!
+	ptm <- proc.time()
+	
+	predict(tates,exams[i], ter, teps)
+	
+	timed <- (proc.time() - ptm)
+	print(exams[i])
+	print(timed)
+	#sink()
 }
-
-stopCluster(cl)
+sink()
+#stopCluster(cl)
