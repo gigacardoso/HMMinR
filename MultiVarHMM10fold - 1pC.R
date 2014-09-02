@@ -28,7 +28,7 @@ fold <- floor(rows/10)
 
 folds <- c(1,fold,fold*2,fold*3,fold*4,fold*5,fold*6,fold*7,fold*8,fold*9)
 #fileConn<-file(paste(c("Z:\\Documents\\Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
-fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\new\\",exam,"_Predictions.csv"),collapse=""))
+fileConn<-file(paste(c("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\1pC\\",exam,"_Predictions.csv"),collapse=""))
 #fileConn<-file("C:\\hepat_data030704\\data\\predictionsHMM\\ALB_Predictions.csv")
 for(p in 1:9){
 	#print(p)
@@ -227,24 +227,23 @@ getPossibleValues <- function(exam){
 #
 
 #"GPT","GOT","ZTT","TTT","D-BIL","I-BIL","ALB","T-CHO","T-BIL","TP","Type","CHE","Activity"
-#"GPT","GOT","ZTT","TTT","T-BIL","D-BIL","I-BIL",
-exams <- c("ALB","CHE","T-CHO","TP","Type","Activity")
+exams <- c("Type")
 
-#cl <- makeCluster(3, type="SOCK")
-#registerDoSNOW(cl)
+cl <- makeCluster(3, type="SOCK")
+registerDoSNOW(cl)
 
-#writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt")
+writeLines(c(""), "C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt")
 sink("C:\\hepat_data030704\\data\\predictionsHMM_Multi\\__log.txt", append=TRUE)
-tates <- 12
-ter <- 1
-teps <- 12
+tates <- 4
+ter <- 15
+teps <- 3
 print("-------------------------------------MULTI-----------------------------------------")
 print(paste("states: ",tates,"iter: ",ter, "steps: ",teps))
 
-#foreach(i = 1:length(exams) , .combine=rbind) %dopar% {
-for(i in 1:length(exams)){
-	#sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
-	##print(exams)
+foreach(i = 1:length(exams) , .combine=rbind) %dopar% {
+#for(i in 1:length(exams)){
+	sink("C:\\hepat_data030704\\data\\predictionsHMM\\__log.txt", append=TRUE)
+	#print(exams)
 	#predict(#states,exam, #iter, #steps)
 	
 	# Start the clock!
@@ -255,7 +254,7 @@ for(i in 1:length(exams)){
 	timed <- (proc.time() - ptm)
 	print(exams[i])
 	print(timed)
-	#sink()
+	sink()
 }
 sink()
-#stopCluster(cl)
+stopCluster(cl)
